@@ -1,0 +1,12 @@
+193218,24.99,QPlay,Cutey,Blue,1-3,Steel,4 EVA wheels for stability,5,true
+239219,50,Mia,Balance Bike with Basket,Pink,1-3,Steel,TPR grip handles,0,true
+238196,129.50,Disney,Frozen Bike with Basket,White and Purple,3-5,Steel,Front and rear mudguards,2,false
+034A1620,229,Bobbin,Arcade,Blue,5-8,Alloy Steel,8 Speed gears and disc Brakes,3,true
+5817511_R,76.99,Pedal Pals,Tractor,Yellow,3-5,Steel,Front and rear mudguards,1,false
+z3064328,100,Huffy,So Sweet,Purple,5-8,Steel,Removable stabilisers,4,false
+962391,280,Trek,Precaliber Freewheel,Lithium Grey,8-11,Aluminium,Kid-friendly braking. Fitted kickstand,2,true
+962441,324.99,Trek,Wahoo,Black/Green,5-8,Alluminium,Lightweight and easy to manoeuvre,3,false
+L-FM62-MGB,450,Frog,MTB 62,Black/Red,8-11,Alluminium,Shimano rapid-fire 9 speed shift gears,2,true
+L-FM78,490,Frog,78,Neon Red,12-15,Alluminium,Reflectors and bell included. Quick-release saddle,5,true
+l-fh73-ytdf,525,Frog,73 Tour de France Edition,Yellow,12-15,Alluminium,Free 5 year warranty on frame and forks,2,false
+s456-123,599.99,Saracen,Mantra Kids Hardtrail,Blue,8-11,Alloy Steel/Aluminium,Shimano Altus M370 Rapidfire 9 speed gears,2,false
