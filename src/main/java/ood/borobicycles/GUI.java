@@ -7,14 +7,19 @@ package ood.borobicycles;
 
 /**
  *
- * @author okafo
+ * @author s3527013
  */
 public class GUI extends javax.swing.JFrame {
+     public static void loadBicycles(){
+    
+    } 
 
     /** Creates new form GUI */
     public GUI() {
         initComponents();
+        loadBicycles();
     }
+   
 
     /** This method is called from within the constructor to
      * initialize the form.
