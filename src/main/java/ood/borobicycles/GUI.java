@@ -4,17 +4,195 @@
  */
 package ood.borobicycles;
 
+//import libraries for aray list and scanner
+import java.util.ArrayList;
+import java.util.Scanner;
+
+//import libraries for file reading
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+//import libraries for image handling
+import javax.swing.ImageIcon;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+/**
+ *
+ * @author s3527013
+ */
 /**
  *
  * @author okafo
  */
 public class GUI extends javax.swing.JFrame {
 
+    // Specifies the delimiter for file reading
+    private final String DELIMITER = ",";
+
+    //variable to keep track of slected row
+    private int rowIndex = -1;
+
+    // the location of bicycles.txt file
+    private final String RELATIVE_PATH = "bicycles.txt";
+
+    // Bicycle table model reference
+    private BicycleTableModel tableModel;
+
+    // Bicycle arrayList to hold list of bicycles
+    ArrayList<Bicycle> bicycleList = new ArrayList<>();
+
+    //array list to hold bicycle images
+    private ArrayList<BufferedImage> imageList = new ArrayList<>();
+
+    // Scanner object declaration
+    Scanner fileScanner;
+
+    // variable to hold column names
+    private String[] columnNames = new String[]{"MAKE", "MODEL", "AGE RANGE", "QUANTITY", "ASSEMBLED"};
+
+    // method to load bicycle data into table with exeption handling capabities
+    private void loadBicycles() throws IOException, FileNotFoundException {
+
+        // File object used to read from file
+        File inputFile = new File(RELATIVE_PATH);
+
+        // Checks if the file path is good and that it is a file
+        if (inputFile.exists() && inputFile.isFile()) {
+
+            // Scanner object to read from file
+            fileScanner = new Scanner(inputFile);
+
+            //Process file
+            while (fileScanner.hasNextLine()) {
+                // read each line
+                String line = fileScanner.nextLine();
+                // check if line is not empty
+                if (line.trim().length() > 0) {
+                    //process line assigning each part to the respective variable 
+                    String sku = line.split(DELIMITER)[0];
+                    double price = Double.parseDouble(line.split(DELIMITER)[1]);
+                    String make = line.split(DELIMITER)[2];
+                    String model = line.split(DELIMITER)[3];
+                    String colour = line.split(DELIMITER)[4];
+                    String ageRange = line.split(DELIMITER)[5];
+                    String material = line.split(DELIMITER)[6];
+                    String feature = line.split(DELIMITER)[7];
+                    int quantity = Integer.parseInt(line.split(DELIMITER)[8]);
+                    boolean assembled = Boolean.parseBoolean(line.split(DELIMITER)[9]);
+                    bicycleList.add(new Bicycle(sku, price, make, model, colour, ageRange, material, feature, quantity, assembled));
+                }
+            }// End of While loop
+
+            // close file Stream
+            fileScanner.close();
+            //Otherwise warn user file is invalid and exit
+        } else {
+            System.err.println("\n!!!!! Error: '" + inputFile.getName() + "' does not exist !!!!!\n\n");
+        }
+    }
+    //method to preload bicycle Images
+
+    private void loadBicycleImages(String imagePath) {
+
+        //loop through main arraylist
+        for (int index = 0; index < bicycleList.size(); index++) {
+            //get photo filename form stock list item
+
+            String filename = imagePath + bicycleList.get(index).getImageFileName();
+
+            //create buffered image object - set to null if loading fails
+            BufferedImage image = null;
+
+            //try to load image
+            try {
+                image = ImageIO.read(new File(filename));
+            } catch (IOException e) {
+                //log and report error - but no need to exit or return
+                String message = "Unable to load image '" + filename + "'";
+                System.err.println("\n!!!!! " + message + " !!!!!\n");
+            } finally {
+                //add either loaded image or null to arraylist
+                imageList.add(image);
+            }
+        }
+    }
+
+    //method to populate tabe and set column headers
+    private void initTable() {
+        //instantiate the table model
+        //link the table model to the table
+        tableModel = new BicycleTableModel(columnNames, bicycleList);
+
+        //link the table model to the table
+        bicycleTable.setModel(tableModel);
+    }
+
+    //method to display image and caption
+    private void displayImage() {
+        //clear any text in labels
+        imageLabel.setText("");
+        captionLabel.setText("");
+
+        //clear any icon displayed in label
+        imageLabel.setIcon(null);
+
+        //get buffered image
+        BufferedImage image = imageList.get(rowIndex);
+
+        //check if image is null
+        if (image == null) {
+            //set text of label
+            imageLabel.setText("Image not available.");
+        } else {
+            //set photolabel using photo array list
+            imageLabel.setIcon(new ImageIcon(image));
+
+            //set text of item label
+            captionLabel.setText(bicycleList.get(rowIndex).getFeature());
+        }
+    }
+
     /**
      * Creates new form GUI
      */
     public GUI() {
+        // load bicycle data  
+        try {
+            //invoke method to load dinosaur file data
+            loadBicycles();
+            //check if array list is empty
+            if (bicycleList.isEmpty()) {
+                //warn and exit
+                String message = "Data Error: No data read from input file";
+                System.err.println("\n!!!!! " + message + " !!!!!\n");
+                System.exit(0);
+            }
+            
+        } catch (FileNotFoundException e) {
+            //warn and exit
+            System.err.println("\n!!!!! Unable to open file !!!!!\n" + e.getMessage() + "\n");
+            System.exit(0);
+            
+        } catch (IOException e) {
+            //warn and exit
+            System.err.print("\n!!!!! File read error !!!!!\n" + e.getMessage() + "\n");
+            System.exit(0);
+            
+        } catch (Exception e) {
+            System.err.print("\n!!!!! Runtime error !!!!!\n" + e.getMessage() + "\n");
+            System.exit(0);
+        }
+
+        // load images to List
+        loadBicycleImages("bicycles/");
+
+        // load gui components
         initComponents();
+
+        //invoke method to populate data
+        initTable();
     }
 
     /**
@@ -32,7 +210,7 @@ public class GUI extends javax.swing.JFrame {
         bicycleTextArea = new javax.swing.JTextArea();
         ImagePanel = new javax.swing.JPanel();
         imageLabel = new javax.swing.JLabel();
-        detailsLabel = new javax.swing.JLabel();
+        captionLabel = new javax.swing.JLabel();
         buttonsPanel = new javax.swing.JPanel();
         saleButton = new javax.swing.JButton();
         stockButton = new javax.swing.JButton();
@@ -54,6 +232,11 @@ public class GUI extends javax.swing.JFrame {
             }
         ));
         bicycleTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        bicycleTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bicycleTableMouseClicked(evt);
+            }
+        });
         bicycleScrollPane.setViewportView(bicycleTable);
 
         bicycleTextArea.setEditable(false);
@@ -63,10 +246,6 @@ public class GUI extends javax.swing.JFrame {
 
         ImagePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
-        imageLabel.setText("jLabel1");
-
-        detailsLabel.setText("jLabel1");
-
         javax.swing.GroupLayout ImagePanelLayout = new javax.swing.GroupLayout(ImagePanel);
         ImagePanel.setLayout(ImagePanelLayout);
         ImagePanelLayout.setHorizontalGroup(
@@ -74,7 +253,7 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ImagePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(ImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(detailsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(captionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -84,7 +263,7 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(imageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(detailsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(captionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -115,7 +294,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(stockButton)
                 .addGap(27, 27, 27)
                 .addComponent(quitButton)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         buttonsPanelLayout.setVerticalGroup(
             buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,9 +313,9 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(bicycleScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                    .addComponent(detailsScrollPane))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(detailsScrollPane)
+                    .addComponent(bicycleScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -152,7 +331,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(ImagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 88, Short.MAX_VALUE))
+                        .addGap(0, 94, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bicycleScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -167,6 +346,14 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_quitButtonMouseClicked
+
+    private void bicycleTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bicycleTableMouseClicked
+        // TODO add your handling code here:
+        // get index of row clicked by user
+        rowIndex = bicycleTable.getSelectedRow();
+        displayImage();
+        
+    }//GEN-LAST:event_bicycleTableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -209,7 +396,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JTable bicycleTable;
     private javax.swing.JTextArea bicycleTextArea;
     private javax.swing.JPanel buttonsPanel;
-    private javax.swing.JLabel detailsLabel;
+    private javax.swing.JLabel captionLabel;
     private javax.swing.JScrollPane detailsScrollPane;
     private javax.swing.JLabel imageLabel;
     private javax.swing.JButton quitButton;
