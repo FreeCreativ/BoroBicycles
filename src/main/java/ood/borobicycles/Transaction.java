@@ -6,7 +6,10 @@ package ood.borobicycles;
 
 /**
  *
+ * @author s3527013
+ * @author e6411415
  * @author e4621366
+ * @author s3516185
  */
 public class Transaction {
 

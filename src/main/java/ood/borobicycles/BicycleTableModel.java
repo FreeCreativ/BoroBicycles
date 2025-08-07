@@ -4,10 +4,6 @@
  */
 package ood.borobicycles;
 
-/**
- *
- * @author s3527013
- */
 // imports the swing table class
 import javax.swing.table.AbstractTableModel;
 
@@ -15,16 +11,31 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Models the Bicycle Table model. Used to display bicycle objects in the
+ * bicycleTable
+ *
+ * @author s3527013
+ * @author e6411415
+ * @author e4621366
+ * @author s3516185
+ * @version 2.0
+ */
 public class BicycleTableModel extends AbstractTableModel {
 
-    //fields
-    //column identifiers
+    //fields or column identifiers
     private String[] columnIdentifiers;
 
     //empty two dimensional object array for to store display data
     private Object[][] data;
 
-    //contructor method
+    /**
+     * BicycleTableModel constructor method
+     *
+     * @param identifiersArray a string array of identifiers, contains table
+     * labels
+     * @param bicycleList contains list of bicycle objects
+     */
     public BicycleTableModel(String[] identifiersArray, ArrayList<Bicycle> bicycleList) {
         //populate single dimensional array using static array copyOf method 
         columnIdentifiers = Arrays.copyOf(identifiersArray, identifiersArray.length);
@@ -56,10 +67,11 @@ public class BicycleTableModel extends AbstractTableModel {
         }//end of for loop
     }
 
-    /*
-     * Override inherited abstract method
+    /**
+     * method to return number of rows
+     *
+     * @return int the number of table rows
      */
-    //method to return number of rows
     @Override
     public int getRowCount() {
         //number of rows will be same as length of two dimesional array
@@ -67,28 +79,44 @@ public class BicycleTableModel extends AbstractTableModel {
 
     }
 
-    //method to return number of columns
+    /**
+     * method to return number of columns
+     *
+     * @return int the number of table columns
+     */
     @Override
     public int getColumnCount() {
         //return length of linear array fiels
         return columnIdentifiers.length;
     }
 
-    //method to return value where user clicks in table
+    /**
+     * method to return value where user clicks in table
+     *
+     * @return Object the value of clicked cell
+     */
     @Override
     public Object getValueAt(int row, int column) {
         //get object at insection of row and column in box
         return data[row][column];
     }
 
-    // method to disable cell editing by overiding the behaviour of isCellEditable method
+    /**
+     * method to disable cell editing
+     *
+     * @return Boolean false to disable editing
+     */
     @Override
     public boolean isCellEditable(int row, int column) {
         return false;
     }
 
-    /*
-     * Override inherited (non abstract) methods
+    /**
+     * method to change the value of a cell
+     *
+     * @param value the new value to be set
+     * @param row the index of the table row
+     * @param column the index of the column
      */
     @Override
     public void setValueAt(Object value, int row, int column) {
@@ -99,16 +127,26 @@ public class BicycleTableModel extends AbstractTableModel {
         fireTableCellUpdated(row, column);
     }
 
+    /**
+     * method so to set column headers
+     *
+     * @param column the index of the table column
+     * @return String the column name from the identifier array
+     */
     @Override
-    //override method so to set column headers
     public String getColumnName(int column) {
         return columnIdentifiers[column];
     }
 
+    /**
+     * method to check if column class is Boolean
+     *
+     * @param column the index of the table column
+     * @return Class the class of the column
+     */
     @Override
-    //override method such that only booleans are shown typed
     public Class getColumnClass(int column) {
-        //check if class type of column ib Boolean, if so rerurn Boolen class
+        //check if class type of column id Boolean, if so rerurn Boolen class
         if (getValueAt(0, column).getClass().equals(Boolean.class)) {
             return Boolean.class;
         } else {

@@ -31,10 +31,10 @@ import java.io.BufferedOutputStream;
 /**
  *
  * @author s3527013
- */
-/**
- *
- * @author okafo
+ * @author e6411415
+ * @author e4621366
+ * @author s3516185
+ * @version 4.0
  */
 public class GUI extends javax.swing.JFrame {
 
@@ -112,8 +112,8 @@ public class GUI extends javax.swing.JFrame {
             System.err.println("\n!!!!! Error: '" + inputFile.getName() + "' does not exist !!!!!\n\n");
         }
     }
-    //method to preload bicycle Images
 
+    //method to preload bicycle Images
     private void loadBicycleImages(String imagePath) {
 
         //loop through main arraylist
