@@ -145,4 +145,4 @@ public class Bicycle {
     public String calculateTotalSale(int quantity) {
         return getFormattedPrice(quantity * this.price);
     }
-}
+}// End of  Bicycle class

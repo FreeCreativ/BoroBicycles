@@ -116,4 +116,4 @@ public class BicycleTableModel extends AbstractTableModel {
             return String.class;
         }
     }
-}
+}// End of BicycleTableModel class
