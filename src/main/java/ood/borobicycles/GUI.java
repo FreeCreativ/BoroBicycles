@@ -21,6 +21,13 @@ import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+// file reading libraries
+import static java.nio.file.StandardOpenOption.*;
+import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.BufferedOutputStream;
+
 /**
  *
  * @author s3527013
@@ -38,7 +45,7 @@ public class GUI extends javax.swing.JFrame {
     private int rowIndex = -1;
 
     // the location of bicycles.txt file
-    private final String RELATIVE_PATH = "bicycles.txt";
+    private final String BICYCLE_FILE_PATH = "bicycles.txt";
 
     // Read only Stock Variables
     private final int MINIMUM_STOCK_LEVEL = 0;
@@ -49,6 +56,12 @@ public class GUI extends javax.swing.JFrame {
 
     // Bicycle arrayList to hold list of bicycles
     ArrayList<Bicycle> bicycleList = new ArrayList<>();
+
+    // transactionList contains List of Transactions
+    ArrayList<Transaction> transactionList = new ArrayList<>();
+
+    // read only Output file path
+    private final String TRANSACTION_FILE_PATH = "transaction.log";
 
     //array list to hold bicycle images
     private ArrayList<BufferedImage> imageList = new ArrayList<>();
@@ -63,7 +76,7 @@ public class GUI extends javax.swing.JFrame {
     private void loadBicycles() throws IOException, FileNotFoundException {
 
         // File object used to read from file
-        File inputFile = new File(RELATIVE_PATH);
+        File inputFile = new File(BICYCLE_FILE_PATH);
 
         // Checks if the file path is good and that it is a file
         if (inputFile.exists() && inputFile.isFile()) {
@@ -222,6 +235,64 @@ public class GUI extends javax.swing.JFrame {
             stockButton.setEnabled(true);
         }
     }
+
+    // Method to save transaction objects into the transactions list
+    public void log(int units, String operation) {
+        // get the selected Bicycle object
+        Bicycle bicycle = bicycleList.get(rowIndex);
+
+        // create a new Transaction object with the suitable bicycle object fields
+        String sku = bicycle.getSku();
+        String make = bicycle.getMake();
+        String model = bicycle.getModel();
+        Double price = bicycle.getPrice();
+        Transaction transaction = new Transaction(sku, make, model, price, units, operation);
+
+        // add transaction object to transaction list
+        transactionList.add(transaction);
+    }
+
+    // method to save transactions in output file
+    public void saveData() throws IOException, FileNotFoundException {
+        // check if the transaction list is empty
+        if (!transactionList.isEmpty()) {
+            Path path = Paths.get(TRANSACTION_FILE_PATH);
+            //delete file if it exits
+            Files.deleteIfExists(path);
+
+            //create buffered output stream
+            BufferedOutputStream output = new BufferedOutputStream(Files.newOutputStream(path, CREATE, WRITE));
+
+            //output string
+            String report = "";
+
+            //loop through arraylist
+            for (Transaction transaction : transactionList) {
+                //add each field of the transaction object to string, followed by delimiter		
+                report += transaction.getSku() + DELIMITER;
+                report += transaction.getMake() + DELIMITER;
+                report += transaction.getModel() + DELIMITER;
+                report += transaction.getPrice() + DELIMITER;
+                report += transaction.getUnits() + DELIMITER;
+                report += transaction.getOperation() + "\r\n";
+            }//end of for-loop	
+
+            //transform output string to byte array
+            byte data[] = report.getBytes();
+
+            //write byte array to the stream
+            output.write(data, 0, data.length);
+
+            //close buffer so stream writes to file
+            output.close();
+
+            // output message variable
+            String outputMessage = "Transactions data written to file at:\n" + path.toAbsolutePath().toString();
+
+            //confirm data written
+            JOptionPane.showMessageDialog(rootPane, outputMessage, "Transactions Data Saved", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//end of saveData
 
     /**
      * Creates new form GUI
@@ -466,6 +537,19 @@ public class GUI extends javax.swing.JFrame {
         );
         // Check User confirmation and close the application
         if (confirmExit == JOptionPane.YES_OPTION) {
+            try {
+                //attempt to save data
+                saveData();
+            } catch (FileNotFoundException e) {
+                //warn user
+                System.out.println("\n\n!!!!! Output Error: Unable to open output file !!!!!\n" + e.getMessage() + "\n");
+            } catch (IOException e) {
+                //warn user
+                System.out.print("\n\n!!!!! Output Error: File write error !!!!!\n" + e.getMessage() + "\n");
+            } finally {
+                //end message
+                System.out.println("\n### Thank you. Program will terminate. ###\n\n");
+            }
             System.exit(0);
         }
     }//GEN-LAST:event_formWindowClosing
@@ -511,6 +595,7 @@ public class GUI extends javax.swing.JFrame {
                 if (salesCount <= bicycleQuantity) {
                     // cast object to Integer since the options is an Integer array
                     bicycle.decrementQuantity(salesCount);
+                    log(salesCount, "SALE");
 
                     // update the table with the new quantity of the bicycle
                     initTable();
@@ -561,6 +646,19 @@ public class GUI extends javax.swing.JFrame {
         );
         // Check User confirmation and close the application
         if (confirmExit == JOptionPane.YES_OPTION) {
+            try {
+                //attempt to save data
+                saveData();
+            } catch (FileNotFoundException e) {
+                //warn user
+                System.out.println("\n\n!!!!! Output Error: Unable to open output file !!!!!\n" + e.getMessage() + "\n");
+            } catch (IOException e) {
+                //warn user
+                System.out.print("\n\n!!!!! Output Error: File write error !!!!!\n" + e.getMessage() + "\n");
+            } finally {
+                //end message
+                System.out.println("\n### Thank you. Program will terminate. ###\n\n");
+            }
             System.exit(0);
         }
     }//GEN-LAST:event_quitButtonActionPerformed
@@ -606,6 +704,7 @@ public class GUI extends javax.swing.JFrame {
                 if (stockCount <= topUpQuantity) {
                     // cast object to Integer since the options is an Integer array
                     bicycle.incrementQuantity(stockCount);
+                    log(stockCount, "STOCK");
 
                     // update the table with the new quantity of the bicycle
                     initTable();
@@ -657,16 +756,24 @@ public class GUI extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
