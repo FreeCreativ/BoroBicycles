@@ -34,7 +34,7 @@ public class Bicycle {
      * @param sku value of bicycle SKU
      * @param price the price of the bicycle
      * @param make the make of the bicycle
-     * @param model the make of the bicycle
+     * @param model the model of the bicycle
      * @param colour the colour of the bicycle
      * @param ageRange contains the suitable age of the rider
      * @param material contains the material of the bicycle
@@ -57,7 +57,7 @@ public class Bicycle {
     }
 
     /**
-     * fetches the sku of the bicycle
+     * returns the sku of the bicycle
      *
      * @return String sku
      */
@@ -66,7 +66,7 @@ public class Bicycle {
     }
 
     /**
-     * fetches the price of the bicycle
+     * returns the price of the bicycle
      *
      * @return Double Price
      */
@@ -84,7 +84,7 @@ public class Bicycle {
     }
 
     /**
-     * gets the model of the bicycle
+     * returns the model of the bicycle
      *
      * @return String model
      */
@@ -102,7 +102,7 @@ public class Bicycle {
     }
 
     /**
-     * gets the suitable age range of the users
+     * returns the suitable age range of the users
      *
      * @return String ageRange
      */
@@ -156,7 +156,7 @@ public class Bicycle {
     }
 
     /**
-     * Reduces the quantity of the Bicycle
+     * decreases the quantity of the Bicycle
      *
      * @param amount sets the decrement quantity
      */

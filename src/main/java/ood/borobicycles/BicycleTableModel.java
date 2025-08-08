@@ -7,7 +7,7 @@ package ood.borobicycles;
 // imports the swing table class
 import javax.swing.table.AbstractTableModel;
 
-//import libraries for aray list
+//imports the ArrayList class
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -40,7 +40,7 @@ public class BicycleTableModel extends AbstractTableModel {
         //populate single dimensional array using static array copyOf method 
         columnIdentifiers = Arrays.copyOf(identifiersArray, identifiersArray.length);
 
-        //set size of data two-dimensaional array using size of arraylist parameter and length of array paramter
+        //set the size of two-dimensaional array data using size of arraylist parameter and length of array paramter
         data = new Object[bicycleList.size()][identifiersArray.length];
 
         //loop through arraylist parameter using for-loop
@@ -49,7 +49,7 @@ public class BicycleTableModel extends AbstractTableModel {
             //get current item
             Bicycle bicycle = bicycleList.get(index);
 
-            //get values from current item - excepy assembled
+            //get values from current item
             String make = bicycle.getMake();
             String model = bicycle.getModel();
             String ageRange = bicycle.getAgeRange();
@@ -91,8 +91,10 @@ public class BicycleTableModel extends AbstractTableModel {
     }
 
     /**
-     * method to return value where user clicks in table
+     * returns the value at the specified row column index.
      *
+     * @param row the row index
+     * @param column the column index
      * @return Object the value of clicked cell
      */
     @Override
@@ -102,7 +104,7 @@ public class BicycleTableModel extends AbstractTableModel {
     }
 
     /**
-     * method to disable cell editing
+     * disables cell editing
      *
      * @return Boolean false to disable editing
      */
@@ -128,7 +130,7 @@ public class BicycleTableModel extends AbstractTableModel {
     }
 
     /**
-     * method so to set column headers
+     * Returns the class of the specified column.
      *
      * @param column the index of the table column
      * @return String the column name from the identifier array
@@ -142,7 +144,7 @@ public class BicycleTableModel extends AbstractTableModel {
      * method to check if column class is Boolean
      *
      * @param column the index of the table column
-     * @return Class the class of the column
+     * @return Class the class type of the column
      */
     @Override
     public Class getColumnClass(int column) {

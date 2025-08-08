@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+     * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package ood.borobicycles;
 
@@ -29,12 +29,15 @@ import java.nio.file.Paths;
 import java.io.BufferedOutputStream;
 
 /**
+ * The `GUI` class is the main frame for the Boro Bicycles application. It
+ * handles the user interface, manages the display of bicycle data, processes
+ * user interactions (sales, stocking), and saves transaction logs.
  *
  * @author s3527013
  * @author e6411415
  * @author e4621366
  * @author s3516185
- * @version 4.0
+ * @version 1.0
  */
 public class GUI extends javax.swing.JFrame {
 
@@ -45,7 +48,7 @@ public class GUI extends javax.swing.JFrame {
     private int rowIndex = -1;
 
     // the location of bicycles.txt file
-    private final String BICYCLE_FILE_PATH = "bicycles.txt";
+    final String BICYCLE_FILE_PATH = "bicycles.txt";
 
     // Read only Stock Variables
     private final int MINIMUM_STOCK_LEVEL = 0;
@@ -72,8 +75,15 @@ public class GUI extends javax.swing.JFrame {
     // variable to hold column names
     private String[] columnNames = new String[]{"MAKE", "MODEL", "AGE RANGE", "QUANTITY", "ASSEMBLED"};
 
-    // method to load bicycle data into table with exeption handling capabities
-    private void loadBicycles() throws IOException, FileNotFoundException {
+    /**
+     * Loads bicycle data from a file into the application. The method reads
+     * `bicycles.txt`, parses each line using a delimiter, and creates `Bicycle`
+     * objects to populate the `bicycleList`.
+     *
+     * @throws IOException if a file read error occurs.
+     * @throws FileNotFoundException if the `bicycles.txt` file does not exist.
+     */
+    public void loadBicycles() throws IOException, FileNotFoundException {
 
         // File object used to read from file
         File inputFile = new File(BICYCLE_FILE_PATH);
@@ -113,7 +123,15 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
-    //method to preload bicycle Images
+    /**
+     * Preloads bicycle images from a specified directory. The method iterates
+     * through the `bicycleList`, constructs a file path for each bicycle's
+     * image, and attempts to load the image into a `BufferedImage`. Loaded
+     * images are stored in the `imageList`. If an image cannot be loaded, a
+     * `null` value is stored and an error is logged.
+     *
+     * @param imagePath The path to the directory containing the bicycle images.
+     */
     private void loadBicycleImages(String imagePath) {
 
         //loop through main arraylist
@@ -139,7 +157,12 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
-    //method to populate tabe and set column headers
+    /**
+     * Initializes the JTable with bicycle data. This method creates a new
+     * `BicycleTableModel` and sets it as the model for the `bicycleTable`
+     * component, thereby populating the table with the data from the
+     * `bicycleList`.
+     */
     private void initTable() {
         //instantiate the table model
         //link the table model to the table
@@ -149,7 +172,14 @@ public class GUI extends javax.swing.JFrame {
         bicycleTable.setModel(tableModel);
     }
 
-    //method to display image and caption
+    /**
+     * Displays the image and caption for a given `Bicycle` object. The method
+     * retrieves the `BufferedImage` from the `imageList` based on the selected
+     * row index. If the image exists, it sets it as the icon for the
+     * `imageLabel` and sets the caption.
+     *
+     * @param bicycle The `Bicycle` object whose details are to be displayed.
+     */
     private void displayImage(Bicycle bicycle) {
         //clear any  in labels
         imageLabel.setText("");
@@ -177,26 +207,32 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
-    // method to display formatted text in the textArea
+    /**
+     * Displays the detailed fields of a `Bicycle` object in the text area. The
+     * method formats the bicycle's information into a user-friendly string and
+     * sets this string as the content of the `bicycleTextArea`.
+     *
+     * @param bicycle The `Bicycle` object whose details are to be displayed.
+     */
     private void displayFields(Bicycle bicycle) {
 
         // string to hold formatted text
         String formattedText = String.format(
                 """
-                                             
-        BICYCLE DETAILS
 
-        SKU:\t%s
-        Make:\t%s
-        Model:\t%s
-        Price:\t%s
-        Quantity:\t%s
-        Age Range:\t%s
-        Colour:\t%s
-        Material:\t%s
-        Assembled:\t%s
-        Feature:\t%s
-        """,
+            BICYCLE DETAILS
+
+            SKU:\t%s
+            Make:\t%s
+            Model:\t%s
+            Price:\t%s
+            Quantity:\t%s
+            Age Range:\t%s
+            Colour:\t%s
+            Material:\t%s
+            Assembled:\t%s
+            Feature:\t%s
+            """,
                 bicycle.getSku(),
                 bicycle.getMake(),
                 bicycle.getModel(),
@@ -213,7 +249,14 @@ public class GUI extends javax.swing.JFrame {
         bicycleTextArea.setText(formattedText);
     }
 
-    // Method to Check stock Count
+    /**
+     * Checks the stock level of a bicycle and enables or disables the action
+     * buttons accordingly. The "SALE" button is disabled if the quantity is at
+     * the minimum level (0). The "STOCK" button is disabled if the quantity is
+     * at the maximum level (5).
+     *
+     * @param bicycle The `Bicycle` object to check.
+     */
     public void checkStock(Bicycle bicycle) {
         // Variable to hold bicycle Quantity
         int bicycleQuantity = bicycle.getQuantity();
@@ -236,7 +279,12 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
-    // Method to save transaction objects into the transactions list
+    /**
+     * Creates and stores a new transaction object in the `transactionList`.
+     *
+     * @param units The number of units involved in the transaction.
+     * @param operation The type of operation (e.g., "SALE" or "STOCK").
+     */
     public void log(int units, String operation) {
         // get the selected Bicycle object
         Bicycle bicycle = bicycleList.get(rowIndex);
@@ -252,7 +300,16 @@ public class GUI extends javax.swing.JFrame {
         transactionList.add(transaction);
     }
 
-    // method to save transactions in output file
+    /**
+     * Saves all recorded transactions from the `transactionList` to an output
+     * file named `transaction.log`. The method first deletes any existing file,
+     * then creates a new one, and writes all transaction data to it in a
+     * delimited format. A confirmation message is displayed upon successful
+     * saving.
+     *
+     * @throws IOException if an error occurs during file writing.
+     * @throws FileNotFoundException if the output file cannot be created.
+     */
     public void saveData() throws IOException, FileNotFoundException {
         // check if the transaction list is empty
         if (!transactionList.isEmpty()) {
