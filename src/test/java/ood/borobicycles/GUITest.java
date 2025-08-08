@@ -14,9 +14,8 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * JUnit tests for the core logic of the Boro Bicycles application, focusing on
- * data loading and stock checking. This class uses mock files and objects to
- * test the application's functionality without a full GUI.
+ * JUnit tests class to check the application's functionality without a full
+ * GUI.
  */
 public class GUITest {
 
@@ -26,8 +25,6 @@ public class GUITest {
 
     /**
      * A mock class of the GUI to allow access to private members for testing.
-     * In a real-world scenario, you would expose these through public getters
-     * or setters in the original class.
      */
     class MockGUI {
 
@@ -66,9 +63,8 @@ public class GUITest {
     }
 
     /**
-     * Set up method that runs before each test. It creates a mock
-     * `bicycles.txt` file with test data. This is crucial for testing the
-     * file-reading logic.
+     * method that runs before each test. Creates a mock `bicycles.txt` file
+     * with test data. This is crucial for testing the file-reading logic.
      */
     @BeforeEach
     public void setUp() throws IOException {
