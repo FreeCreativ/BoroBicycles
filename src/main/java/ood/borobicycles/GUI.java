@@ -48,7 +48,7 @@ public class GUI extends javax.swing.JFrame {
     private int rowIndex = -1;
 
     // the location of bicycles.txt file
-    final String BICYCLE_FILE_PATH = "bicycles.txt";
+    private final String BICYCLE_FILE_PATH = "bicycles.txt";
 
     // Read only Stock Variables
     private final int MINIMUM_STOCK_LEVEL = 0;
